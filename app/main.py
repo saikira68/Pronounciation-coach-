@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-from .scoring import assess, audio_duration, load_audio
+from .scoring import assess, audio_duration, load_audio, warm_up
 
 MIN_DURATION = float(os.environ.get("MIN_DURATION", "30"))
 MAX_DURATION = float(os.environ.get("MAX_DURATION", "45"))
@@ -33,6 +33,15 @@ app.add_middleware(
     allow_methods=["POST", "GET"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def _startup() -> None:
+    # Preload models so the first user request doesn't pay the load cost.
+    try:
+        warm_up()
+    except Exception:
+        pass
 
 
 @app.get("/api/health")

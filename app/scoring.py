@@ -50,11 +50,27 @@ def _load_models():
 
         name = os.environ.get("PHONEME_MODEL", "facebook/wav2vec2-lv-60-espeak-cv-ft")
         _w2v_processor = Wav2Vec2Processor.from_pretrained(name)
-        _w2v_model = Wav2Vec2ForCTC.from_pretrained(name)
-        _w2v_model.eval()
+        model = Wav2Vec2ForCTC.from_pretrained(name)
+        model.eval()
+        _w2v_blank_id = model.config.pad_token_id or 0
+        # Dynamic int8 quantization of the Linear layers roughly halves CPU
+        # inference time (this model dominates latency) with negligible accuracy
+        # loss. Disable with QUANTIZE=0.
+        if os.environ.get("QUANTIZE", "1") == "1":
+            try:
+                model = torch.quantization.quantize_dynamic(
+                    model, {torch.nn.Linear}, dtype=torch.qint8
+                )
+            except Exception:
+                pass
+        _w2v_model = model
         torch.set_num_threads(max(1, os.cpu_count() or 1))
-        _w2v_blank_id = _w2v_model.config.pad_token_id or 0
     return _whisper, _w2v_model, _w2v_processor
+
+
+def warm_up() -> None:
+    """Load models eagerly (called at startup) so the first request is fast."""
+    _load_models()
 
 
 def load_audio(data: bytes) -> np.ndarray:
