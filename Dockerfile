@@ -29,4 +29,6 @@ COPY --chown=user scripts ./scripts
 RUN python scripts/download_models.py
 
 EXPOSE 7860
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Shell form so $PORT (set by Railway and other PaaS hosts) is honoured; falls
+# back to 7860 for local runs and Hugging Face Spaces.
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-7860}

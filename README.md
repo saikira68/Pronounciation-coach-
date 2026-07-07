@@ -14,7 +14,7 @@ license: mit
 Upload **30–45 seconds** of English speech and get an overall pronunciation score plus the
 specific words and sounds that need work. Built for the Livo AI SWE assessment.
 
-- **Live demo:** deployed on Hugging Face Spaces (Docker).
+- **Live demo:** deployed on Railway (Docker). See the repo/PR description for the URL.
 - **Architecture & DPDP compliance:** see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## How it works
