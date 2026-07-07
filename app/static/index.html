@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Livo Pronunciation Coach</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>Pronunciation Coach</h1>
+      <p class="sub">Upload <strong>30&ndash;45 seconds</strong> of English speech and get a pronunciation
+        score with the exact words and sounds to work on.</p>
+    </header>
+
+    <section class="card" id="uploader">
+      <div class="drop" id="drop">
+        <input type="file" id="file" accept="audio/*" hidden />
+        <p class="drop-title">Drop an audio file here or <button type="button" id="browse" class="link">browse</button></p>
+        <p class="drop-hint">WAV, MP3, M4A or WEBM &middot; 30&ndash;45s &middot; English speech</p>
+      </div>
+
+      <div id="filemeta" class="filemeta hidden">
+        <span id="filename"></span>
+        <span id="duration" class="badge"></span>
+        <audio id="player" controls></audio>
+      </div>
+
+      <label class="consent">
+        <input type="checkbox" id="consent" />
+        <span>I consent to my audio being processed to generate a pronunciation score. I understand it is
+          processed in memory, is <strong>not stored</strong>, and is discarded immediately after analysis.
+          (<a href="#privacy">Privacy&nbsp;notice</a>)</span>
+      </label>
+
+      <button id="analyze" class="primary" disabled>Analyze pronunciation</button>
+      <p id="error" class="error hidden"></p>
+    </section>
+
+    <section class="card hidden" id="loading">
+      <div class="spinner"></div>
+      <p>Analyzing your speech&hellip; the first run downloads the models and may take a little longer.</p>
+    </section>
+
+    <section class="card hidden" id="results">
+      <div class="scores">
+        <div class="score-main">
+          <div class="ring" id="ring"><span id="overall">0</span></div>
+          <p>Overall pronunciation</p>
+        </div>
+        <div class="score-side">
+          <div class="metric"><span id="fluency">0</span><label>Fluency</label></div>
+          <div class="metric good"><span id="c-good">0</span><label>Good</label></div>
+          <div class="metric bad"><span id="c-bad">0</span><label>Mispronounced</label></div>
+          <div class="metric warn"><span id="c-unclear">0</span><label>Unclear</label></div>
+        </div>
+      </div>
+
+      <h2>What you said</h2>
+      <p class="hint">Tap a highlighted word to see what went wrong.</p>
+      <div id="transcript" class="transcript"></div>
+
+      <div id="wordcard" class="wordcard hidden"></div>
+
+      <button id="again" class="secondary">Analyze another clip</button>
+    </section>
+
+    <section class="card notice" id="privacy">
+      <h2>Privacy &amp; DPDP notice</h2>
+      <ul>
+        <li><strong>Purpose &amp; consent:</strong> your audio is used solely to compute a pronunciation
+          score, only after you tick the consent box above.</li>
+        <li><strong>No storage / retention:</strong> audio is processed in memory and discarded the moment
+          your result is returned. It is never written to disk, logged, or used for training.</li>
+        <li><strong>No third parties:</strong> all speech recognition runs on this server; your audio is not
+          sent to any external API.</li>
+        <li><strong>Deletion:</strong> because nothing is retained, there is nothing to delete after the
+          request completes. Closing this tab removes the local copy in your browser.</li>
+      </ul>
+      <p class="fine">Aligned with India's Digital Personal Data Protection Act, 2023. See the architecture
+        doc in the repository for the full compliance posture.</p>
+    </section>
+
+    <footer>
+      <span>Livo AI assessment &middot; runs fully self-hosted, no paid speech APIs.</span>
+    </footer>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
